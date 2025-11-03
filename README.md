@@ -45,6 +45,19 @@ especially when developing complex scenes with multiple interactive elements.
 
 ---
 
+---
+
+### How to update
+
+1. In the Godot Addons list, uncheck ObjId Manager to disable it.
+2. Delete the ObjIdManager folder inside the addons directory.
+3. In Godot’s menu bar, click Project → Reload Current Project. (You can also do this after importing the new version.)
+4. Place the latest ZIP file in any location you prefer.
+5. In the Addons window, click the Import button and select the new ZIP file to import it.
+6. Finally, re-enable ObjId Manager in the Addons list.
+
+---
+
 ### Usage
 
 - Edit ObjIds directly in the dock — all edits are Undo/Redo-safe  
