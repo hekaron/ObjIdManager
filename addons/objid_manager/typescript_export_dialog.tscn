@@ -1,0 +1,103 @@
+[gd_scene load_steps=3 format=3 uid="uid://ci2ho6ae82mhy"]
+
+[ext_resource type="Script" uid="uid://cfvc6w6adf23p" path="res://addons/objid_manager/typescript_export_dialog.gd" id="1_v8u8m"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v8u8m"]
+bg_color = Color(0.08, 0.08, 0.08, 0.5)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="TypeScriptExportDialog" type="AcceptDialog"]
+title = "TypeScript変換"
+initial_position = 2
+size = Vector2i(730, 730)
+unresizable = true
+min_size = Vector2i(680, 730)
+max_size = Vector2i(900, 900)
+ok_button_text = "閉じる"
+script = ExtResource("1_v8u8m")
+
+[node name="RootControl" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="RootControl"]
+layout_mode = 0
+offset_right = 193.0
+offset_bottom = 86.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="RootControl/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="RootControl/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "下で入力した名前の変数にチェックを付けた順番で値が入った配列を定義するコードを出力します。"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="RootControl/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 2
+
+[node name="VarNameField" type="LineEdit" parent="RootControl/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "objects"
+placeholder_text = "変数名を入力"
+
+[node name="BtnCheckAll" type="Button" parent="RootControl/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="BtnUncheckAll" type="Button" parent="RootControl/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="BtnConvert" type="Button" parent="RootControl/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "変換"
+
+[node name="BtnCopy" type="Button" parent="RootControl/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "コピー"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="RootControl/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(600, 200)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="RootControl/MarginContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_v8u8m")
+
+[node name="NodeContainer" type="VBoxContainer" parent="RootControl/MarginContainer/VBoxContainer/ScrollContainer/PanelContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="NoticeLabel" type="Label" parent="RootControl/MarginContainer/VBoxContainer"]
+modulate = Color(1, 0.8, 0.4, 1)
+layout_mode = 2
+size_flags_vertical = 6
+text = "※-1は使わない物とみなし非表示。CombatArea/DeployCam/Surrounding..は現在取得不能のため除外。"
+
+[node name="CodeDisplay" type="TextEdit" parent="RootControl/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(600, 300)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+editable = false
+wrap_mode = 1
