@@ -1,4 +1,4 @@
-# ObjId Manager for BFPortal v1.0.2
+# ObjId Manager for BFPortal v1.0.3
 # Developed by: hekaron
 
 ---
@@ -42,8 +42,6 @@ especially when developing complex scenes with multiple interactive elements.
 > 💡 If you suspect the addon is not working correctly,  
 > try **disabling it once and re-enabling** it from the plugin list.  
 > This usually resolves minor state sync issues.
-
----
 
 ---
 
@@ -109,7 +107,7 @@ Battlefield Portal のステージ制作やオブジェクト制御を行う制�
 - Node3D の ObjId 一覧表示（Tree形式）  
 - 重複値のハイライト表示  
 - 自動連番付与  
-- **Undo / Redo 対応**  
+- **Undo / Redo 対応**
 - TypeScript 形式へのエクスポートダイアログ  
   - チェック順に変換順を維持  
   - 除外カテゴリはグレー表示で非選択化  
@@ -133,6 +131,15 @@ Battlefield Portal のステージ制作やオブジェクト制御を行う制�
 > 状態リセットで問題が解消する場合があります。
 
 ---
+
+### アップデート手順
+
+1. Godotのインストール済みアドオン一覧画面でObjIdManagerを無効化。
+2. Godotプロジェクトファイル内のaddonsフォルダからObjIdManagerのフォルダを削除。
+3. Godotのメニューバーのプロジェクトから **プロジェクトを再読み込み** を実行する (新しいバージョンのzipをインポートしてからでも良いです)
+4. ZIPファイルを任意の場所に配置する。
+5. アドオン一覧に戻ってインポートから先程のZIPファイルを選択してインポート。
+6. 最後にインストール済みプラグイン一覧からアドオンを有効化する。
 
 ### 使い方
 
