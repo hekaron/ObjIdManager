@@ -1,4 +1,4 @@
-# ObjId Manager for BFPortal v1.0.3
+# ObjId Manager for BFPortal v1.1.1
 # Developed by: hekaron
 
 ---
@@ -7,7 +7,7 @@
 
 ### Overview
 
-**ObjId Manager for BFPortal** is an editor addon for **Godot 4.4+**,  
+**ObjId Manager for BFPortal** is an editor addon for **Godot 4.6+**,  
 specifically designed for the **Godot project environment included in the Battlefield Portal SDK**.  
 It provides a visual interface to manage and export `@export var ObjId` values from Node3D objects.
 
@@ -18,15 +18,23 @@ especially when developing complex scenes with multiple interactive elements.
 
 ### Features
 
-- Display all Node3D `ObjId` values in a tree view  
-- Highlight duplicate values  
-- Auto-generate sequential IDs  
-- **Undo / Redo** supported  
-- TypeScript export dialog  
-  - Convert selected nodes into TypeScript definitions  
-  - Maintains export order based on check sequence  
-  - Disabled (gray) items for excluded nodes  
-  - “Uncheck All” / "Check All" button for quick reset and check all
+- Display all Node3D `ObjId` values in a tree view
+- Highlight duplicate ObjId values
+- Display duplicate ObjId conflict count
+- Filter to show only conflicting ObjIds
+- Organize nodes into collapsible categories
+- Collapse / Expand all categories
+- Select or deselect all nodes within a category
+- Shift+Click range selection
+- Press **Esc** to clear all selections
+- Auto-generate sequential IDs
+- **Undo / Redo** supported
+- TypeScript export dialog
+  - Convert selected nodes into TypeScript definitions
+  - Maintains export order based on check sequence
+  - Nodes in excluded categories are displayed as disabled (gray)
+  - "Uncheck All" / "Check All" buttons
+  - Remembers dialog state when reopened
 
 ---
 
@@ -64,9 +72,26 @@ especially when developing complex scenes with multiple interactive elements.
 
 ---
 
+## Acknowledgements
+
+Special thanks to everyone who has contributed ideas, code, bug reports, and testing for ObjId Manager.
+
+### Code Contributions
+
+- Andy6170
+  - Option to select all in categories
+  - Conflicts Counter added
+  - Show Conflicts Only filter
+  - Collapse/Expand All Categories button
+  - Capture points and Fixed Camera is now a category
+  - You can now Shift+Click to multi select
+  - Pressing Esc now deselects all
+
+---
+
 ### Compatibility
 
-- Godot 4.4.1 or newer  
+- Godot 4.6.3 or newer  
 - Fully tested within the Battlefield Portal SDK Godot environment  
 
 ---
@@ -93,7 +118,7 @@ Always back up your project before installing or updating addons.
 
 ### 概要
 
-**ObjId Manager for BFPortal** は、**Godot 4.4+** および  
+**ObjId Manager for BFPortal** は、**Godot 4.6+** および  
 **Battlefield Portal SDK に同梱されている Godot プロジェクト環境** 向けに設計されたエディタ拡張アドオンです。  
 Node3D の `@export var ObjId` を一覧・編集・エクスポートする機能を提供します。
 
@@ -104,14 +129,23 @@ Battlefield Portal のステージ制作やオブジェクト制御を行う制�
 
 ### 主な機能
 
-- Node3D の ObjId 一覧表示（Tree形式）  
-- 重複値のハイライト表示  
-- 自動連番付与  
+- Node3D の ObjId 一覧表示（Tree形式）
+- 重複している ObjId のハイライト表示
+- ObjId競合数の表示
+- 競合している ObjId のみ表示
+- ノードをカテゴリごとに整理表示
+- 全カテゴリの折りたたみ・展開
+- カテゴリ単位で一括選択・一括解除
+- Shift+クリックによる範囲選択
+- **Esc**キーですべての選択を解除
+- ObjId の自動連番付与
 - **Undo / Redo 対応**
-- TypeScript 形式へのエクスポートダイアログ  
-  - チェック順に変換順を維持  
-  - 除外カテゴリはグレー表示で非選択化  
-  - 「すべてのチェックを外す」「すべてにチェックを付ける」ボタン搭載  
+- TypeScript 形式へのエクスポートダイアログ
+  - 選択したノードを TypeScript 定義へ変換
+  - チェック順に変換順を維持
+  - 除外カテゴリのノードはグレー表示で選択不可
+  - 「すべてのチェックを外す」「すべてにチェックを付ける」ボタン搭載
+  - ダイアログの状態（選択・サイズ・位置など）を保持したまま再表示可能
 
 ---
 
@@ -149,9 +183,25 @@ Battlefield Portal のステージ制作やオブジェクト制御を行う制�
 
 ---
 
+## 謝辞
+
+ObjId Manager に対して、アイデアやコード、バグ報告、テストの提供にご協力いただいた皆様に、心より感謝申し上げます。
+
+### コード・コントリビューター
+
+- Andy6170
+  - 競合IDのみ表示機能
+  - ID競合数表示
+  - カテゴリ毎の全選択
+  - カテゴリの展開/折り畳み
+  - SHIFTキー + クリックで複数選択
+  - ESCキーで全選択状態解除
+
+---
+
 ### 動作環境
 
-- Godot 4.4.1 以上  
+- Godot 4.6.3 以上  
 - Battlefield Portal SDK の Godot 環境で動作確認済み  
 
 ---
