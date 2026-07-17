@@ -734,54 +734,71 @@ func _input(event: InputEvent) -> void:
 		_clear_all_selections()
 
 # === ObjIdセル編集時 ===
-func _on_item_edited():
+func _on_item_edited() -> void:
 	var item: TreeItem = tree.get_edited()
-	if not item:
+	if not is_instance_valid(item):
 		return
 
-	var edit_col = tree.get_edited_column()
+	var edit_col: int = tree.get_edited_column()
+
 	if edit_col == 0:
-		if item.get_cell_mode(0) == TreeItem.CELL_MODE_CHECK:
-			var checked := item.is_checked(0)
-			if Input.is_key_pressed(KEY_SHIFT) and _last_toggled_tree_item != null and _last_toggled_tree_item != item:
-				_toggle_rows_in_range(_last_toggled_tree_item, item, checked)
-			else:
-				item.set_checked(0, checked)
-				_refresh_checkbox_state_ui()
-
-			_last_toggled_tree_item = item
+		# カテゴリ行は、配下のノードをまとめて切り替える。
+		if _is_category_item(item):
+			var category_name := _get_item_category_name(item)
+			if category_name != "":
+				_toggle_category_rows(category_name, item.is_checked(0))
 			return
 
-		var category_name: String = item.get_meta("category_name")
-		if category_name != "":
-			_toggle_category_rows(category_name, item.is_checked(0))
-			return
+		# 通常のノード行のチェック状態を反映する。
+		var checked := item.is_checked(0)
+		if (
+			Input.is_key_pressed(KEY_SHIFT)
+			and is_instance_valid(_last_toggled_tree_item)
+			and _last_toggled_tree_item != item
+		):
+			_toggle_rows_in_range(_last_toggled_tree_item, item, checked)
+		else:
+			item.set_checked(0, checked)
+			_refresh_checkbox_state_ui()
+
+		_last_toggled_tree_item = item
 		return
 
-	if edit_col == 1:
-		var category_name: String = item.get_meta("category_name")
-		if category_name != "":
-			return
+	if edit_col != 1:
+		return
 
-		var text_val: String = item.get_text(1)
-		var new_val := text_val.to_int()
-		for row in node_rows:
-			if row.item == item:
-				var node: Node3D = row.node
-				var old_val = node.ObjId
-				if old_val == new_val:
-					break
-				var ur: EditorUndoRedoManager = plugin_ref.get_undo_redo()
-				ur.create_action(t("Action_ChangeObjId"))
-				ur.add_do_property(node, "ObjId", new_val)
-				ur.add_undo_property(node, "ObjId", old_val)
-				ur.add_do_method(self, "refresh_list")
-				ur.add_undo_method(self, "refresh_list")
-				ur.commit_action()
-				break
+	# カテゴリ行のObjId列は編集対象外。
+	if _is_category_item(item):
+		return
 
-		_update_checked_tree_display()
-		_update_duplicates()
+	var target_node: Node3D = null
+	for row in node_rows:
+		if row and row.item == item and is_instance_valid(row.node):
+			target_node = row.node
+			break
+
+	if not is_instance_valid(target_node):
+		return
+
+	var text_val := item.get_text(1).strip_edges()
+	if not text_val.is_valid_int():
+		# 不正な入力を0へ変換せず、実際の値へ戻す。
+		item.set_text(1, str(target_node.ObjId))
+		return
+
+	var new_val := text_val.to_int()
+	var old_val: int = int(target_node.ObjId)
+	if old_val == new_val:
+		item.set_text(1, str(old_val))
+		return
+
+	var ur: EditorUndoRedoManager = plugin_ref.get_undo_redo()
+	ur.create_action(t("Action_ChangeObjId"))
+	ur.add_do_property(target_node, "ObjId", new_val)
+	ur.add_undo_property(target_node, "ObjId", old_val)
+	ur.add_do_method(self, "_after_objid_changed", target_node, new_val)
+	ur.add_undo_method(self, "_after_objid_changed", target_node, old_val)
+	ur.commit_action()
 
 # === Treeで選択したらエディタ上でも選択 ===
 func _on_item_selected():
@@ -865,6 +882,18 @@ func _collect_export_rows() -> Array:
 	return rows
 
 func _on_ts_button_pressed() -> void:
+	# When the export window is already open, the Export button acts as a
+	# "recall window" action. Preserve its check state, generated code, size,
+	# and position instead of rebuilding it.
+	if is_instance_valid(ts_dialog) and ts_dialog.visible:
+		if ts_dialog.has_method("bring_to_front"):
+			ts_dialog.call("bring_to_front")
+		else:
+			if ts_dialog.mode == Window.MODE_MINIMIZED:
+				ts_dialog.mode = Window.MODE_WINDOWED
+			ts_dialog.call_deferred("grab_focus")
+		return
+
 	var list_items := _collect_export_rows()
 	if list_items.is_empty():
 		push_warning("No valid ObjId nodes available for TypeScript export.")
@@ -935,12 +964,22 @@ func _get_category_name(node_obj: Object) -> String:
 		return "Surrounding Area"
 	elif script_name == "VehicleSpawner":
 		return "Vehicle Spawner"
+	elif script_name == "LootSpawner":
+		return "Loot Spawner"
 	elif script_name == "SpawnPoint":
 		return "Spawn Point" 
 	elif script_name == "WorldIcon":
 		return "World Icon"
+	elif script_name == "RingOfFire":
+		return "Ring Of Fire"
+	elif script_name == "HeatZone":
+		return "Heat Zone"
+	elif script_name == "VL7Cloud":
+		return "VL7 Cloud"
 	elif script_name == "MCOM":
 		return "MCOM"
+	elif script_name == "Bomb":
+		return "Bomb"
 	else:
 		return "Spatial Object"
 

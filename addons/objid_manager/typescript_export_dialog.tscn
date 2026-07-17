@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://ci2ho6ae82mhy"]
+[gd_scene format=3 uid="uid://ci2ho6ae82mhy"]
 
 [ext_resource type="Script" uid="uid://cfvc6w6adf23p" path="res://addons/objid_manager/typescript_export_dialog.gd" id="1_v8u8m"]
 
@@ -9,20 +9,19 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
-[node name="TypeScriptExportDialog" type="AcceptDialog"]
-exclusive = false
+[node name="TypeScriptExportDialog" type="AcceptDialog" unique_id=1813012821]
 title = "Convert to TypeScript"
 initial_position = 2
 size = Vector2i(680, 640)
-unresizable = false
+transient_to_focused = true
+exclusive = false
 maximize_disabled = false
 min_size = Vector2i(680, 560)
 max_size = Vector2i(0, 0)
 ok_button_text = "Close"
 script = ExtResource("1_v8u8m")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
-layout_mode = 0
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=156089659]
 offset_right = 680.0
 offset_bottom = 560.0
 size_flags_horizontal = 3
@@ -32,71 +31,76 @@ theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 12
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=221255235]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 8
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer" unique_id=919782678]
 custom_minimum_size = Vector2(600, 0)
 layout_mode = 2
-text = "Generates TypeScript code from the checked objects."
+size_flags_vertical = 0
+text = "Generates code to define an array with the variables named in the input field below,
+in the order they were checked."
 autowrap_mode = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=823571190]
 layout_mode = 2
+size_flags_vertical = 0
 alignment = 2
 
-[node name="VarNameField" type="LineEdit" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="VarNameField" type="LineEdit" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=273351791]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "objects"
-placeholder_text = ""
+placeholder_text = "Enter the variable name."
 
-[node name="BtnCheckAll" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="BtnCheckAll" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=348392116]
 layout_mode = 2
 text = "Check All"
 
-[node name="BtnUncheckAll" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="BtnUncheckAll" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=856688858]
 layout_mode = 2
 text = "Uncheck All"
 
-[node name="BtnConvert" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="BtnConvert" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=347899783]
 layout_mode = 2
 text = "Convert"
 
-[node name="BtnCopy" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="BtnCopy" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1203117103]
 layout_mode = 2
 text = "Copy"
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer" unique_id=35123778]
 custom_minimum_size = Vector2(600, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/ScrollContainer" unique_id=1403311409]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_v8u8m")
 
-[node name="NodeContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/PanelContainer"]
+[node name="NodeContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/PanelContainer" unique_id=399546939]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="NoticeLabel" type="Label" parent="MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(600, 0)
+[node name="NoticeLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=2062228414]
 modulate = Color(1, 0.8, 0.4, 1)
+custom_minimum_size = Vector2(600, 0)
 layout_mode = 2
-text = "Objects with ObjId -1 and unsupported object types are excluded."
+size_flags_vertical = 0
+text = "-1 was treated as unused and hidden. CombatArea/DeployCam/SurroundingCombatArea were excluded
+because they cannot currently be declared as objects."
 autowrap_mode = 3
 
-[node name="CodeDisplay" type="TextEdit" parent="MarginContainer/VBoxContainer"]
+[node name="CodeDisplay" type="TextEdit" parent="MarginContainer/VBoxContainer" unique_id=2116557194]
 custom_minimum_size = Vector2(600, 180)
 layout_mode = 2
 size_flags_horizontal = 3

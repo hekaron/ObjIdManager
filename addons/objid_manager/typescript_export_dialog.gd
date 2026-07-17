@@ -77,12 +77,14 @@ var CATEGORY_FUNC_MAP := {
 	"AreaTrigger": "mod.GetAreaTrigger",
 	"CombatArea": "",
 	"DeployCam": "",
+	"FixedCamera": "mod.GetFixedCamera",
 	"HQ_PlayerSpawner": "mod.GetHQ",
 	"InteractPoint": "mod.GetInteractPoint",
 	"PlayerSpawner": "mod.GetSpawner",
 	"Sector": "mod.GetSector",
 	"SpawnPoint": "mod.GetSpawnPoint",
 	"StationaryEmplacementSpawner": "mod.GetEmplacementSpawner",
+	"Vehicle": "",
 	"VehicleSpawner": "mod.GetVehicleSpawner",
 	"WorldIcon": "mod.GetWorldIcon",
 	"MCOM": "mod.GetMCOM",
@@ -90,6 +92,11 @@ var CATEGORY_FUNC_MAP := {
 	"SurroundingCombatArea": "",
 	"FX_": "mod.GetVFX",
 	"VFX_": "mod.GetVFX",
+	"LootSpawner": "mod.GetLootSpawner",
+	"RingOfFire": "mod.GetRingOfFire",
+	"HeatZone": "",
+	"VL7Cloud": "mod.GetVL7Cloud",
+	"Bomb": "mod.GetBomb",
 	"Spatial Object": "mod.GetSpatialObject"
 }
 
@@ -138,10 +145,17 @@ func _apply_localized_texts() -> void:
 	var_name_field.placeholder_text = trl("PlaceholderVarNameField")
 
 func _initialize_layout() -> void:
+	# Keep this utility window associated with the currently focused Godot
+	# editor window. It stays above its editor parent without becoming a
+	# globally always-on-top or exclusive modal window.
+	transient = true
+	transient_to_focused = true
+	exclusive = false
+	always_on_top = false
+
 	# AcceptDialog lays out its direct Control child inside the content area,
 	# above the built-in Close button row. Keep the direct MarginContainer
 	# unanchored so AcceptDialog can assign that rectangle correctly.
-	exclusive = false
 	unresizable = false
 	maximize_disabled = false
 	wrap_controls = true
@@ -177,6 +191,19 @@ func _initialize_layout() -> void:
 	label_notice.custom_minimum_size = Vector2(600, 0)
 
 	hide()
+
+func bring_to_front() -> void:
+	if not visible:
+		return
+
+	# A minimized native editor window is still visible from Godot's point of
+	# view, so restore it before requesting focus.
+	if mode == Window.MODE_MINIMIZED:
+		mode = Window.MODE_WINDOWED
+
+	# Defer focus until the window manager has processed the mode change.
+	call_deferred("grab_focus")
+
 
 func popup_fitted() -> void:
 	# The first opening is fitted to the controls' combined minimum size.
