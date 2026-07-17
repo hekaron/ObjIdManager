@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://cipm18yp1f4uu"]
+[gd_scene format=3 uid="uid://cipm18yp1f4uu"]
 
 [ext_resource type="Script" uid="uid://5i8uloagb3w0" path="res://addons/objid_manager/objid_panel.gd" id="1_mygw8"]
 
-[node name="ObjId" type="Control"]
+[node name="ObjId" type="Control" unique_id=1237341669]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,7 +11,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_mygw8")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1775028304]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,30 +19,30 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=349510098]
 layout_mode = 2
 
-[node name="BtnRefresh" type="Button" parent="VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "シーン内のObjIdリストを再読み込みします"
-text = "更新"
-
-[node name="BtnAssign" type="Button" parent="VBoxContainer/HBoxContainer"]
+[node name="BtnRefresh" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=1907942486]
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "チェックされたノードに連番または同一番号を一括設定します"
-text = "一括設定"
+tooltip_text = ""
+text = ""
 
-[node name="BtnTSExport" type="Button" parent="VBoxContainer/HBoxContainer"]
+[node name="BtnAssign" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=1594139687]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "コード出力"
+tooltip_text = ""
+text = ""
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
+[node name="BtnTSExport" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=661105619]
+layout_mode = 2
+size_flags_horizontal = 3
+text = ""
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer" unique_id=780062002]
 layout_mode = 2
 
-[node name="StartNumber" type="SpinBox" parent="VBoxContainer/HBoxContainer2"]
+[node name="StartNumber" type="SpinBox" parent="VBoxContainer/HBoxContainer2" unique_id=409138755]
 layout_mode = 2
 size_flags_horizontal = 3
 max_value = 999999.0
@@ -50,30 +50,30 @@ rounded = true
 allow_greater = true
 allow_lesser = true
 
-[node name="UseSameNumber" type="CheckBox" parent="VBoxContainer/HBoxContainer2"]
+[node name="UseSameNumber" type="CheckBox" parent="VBoxContainer/HBoxContainer2" unique_id=1785162223]
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "オンの場合、すべての選択ノードに同じObjIdを設定します"
-text = "同じ番号を使う"
+tooltip_text = ""
+text = ""
 
-[node name="CheckBtnSyncSceneSelection" type="CheckButton" parent="VBoxContainer"]
+[node name="CheckBtnSyncSceneSelection" type="CheckButton" parent="VBoxContainer" unique_id=2046870217]
 layout_direction = 3
 layout_mode = 2
 size_flags_horizontal = 0
 focus_mode = 0
-text = "シーン上で選択したノードにチェックを付ける"
+text = ""
 
-[node name="CheckedTree" type="Tree" parent="VBoxContainer"]
+[node name="CheckedTree" type="Tree" parent="VBoxContainer" unique_id=198849826]
 visible = false
 layout_mode = 2
 size_flags_vertical = 3
 columns = 2
 
-[node name="Label" type="Label" parent="VBoxContainer"]
+[node name="Label" type="Label" parent="VBoxContainer" unique_id=1890332379]
 layout_mode = 2
-text = "全ノード"
+text = ""
 
-[node name="ObjTree" type="Tree" parent="VBoxContainer"]
+[node name="ObjTree" type="Tree" parent="VBoxContainer" unique_id=304889365]
 layout_mode = 2
 size_flags_vertical = 3
 columns = 2

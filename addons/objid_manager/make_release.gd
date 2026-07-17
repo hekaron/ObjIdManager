@@ -9,7 +9,7 @@ extends EditorScript
 
 func _run():
 	var plugin_dir := "res://addons/objid_manager/"
-	var output_zip := "res://objid_manager_v1.0.3.zip"
+	var output_zip := "res://objid_manager_v1.1.1.zip"
 
 	var file_list := [
 		"plugin.cfg",

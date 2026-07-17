@@ -1,19 +1,27 @@
 @tool
 extends AcceptDialog
 
-@onready var root_ctrl: Control = $RootControl
-@onready var root_vb: VBoxContainer = $RootControl/MarginContainer/VBoxContainer
-@onready var label_guide: Label = $RootControl/MarginContainer/VBoxContainer/Label
-@onready var sc: ScrollContainer = $RootControl/MarginContainer/VBoxContainer/ScrollContainer
-@onready var var_name_field: LineEdit = $RootControl/MarginContainer/VBoxContainer/HBoxContainer/VarNameField
-@onready var panel_bg: PanelContainer = $RootControl/MarginContainer/VBoxContainer/ScrollContainer/PanelContainer
-@onready var node_container: VBoxContainer = $RootControl/MarginContainer/VBoxContainer/ScrollContainer/PanelContainer/NodeContainer
-@onready var btn_check_all: Button = $RootControl/MarginContainer/VBoxContainer/HBoxContainer/BtnCheckAll
-@onready var btn_uncheck_all: Button = $RootControl/MarginContainer/VBoxContainer/HBoxContainer/BtnUncheckAll
-@onready var btn_convert: Button = $RootControl/MarginContainer/VBoxContainer/HBoxContainer/BtnConvert
-@onready var btn_copy: Button = $RootControl/MarginContainer/VBoxContainer/HBoxContainer/BtnCopy
-@onready var label_notice: Label = $RootControl/MarginContainer/VBoxContainer/NoticeLabel
-@onready var code_display: TextEdit = $RootControl/MarginContainer/VBoxContainer/CodeDisplay
+@onready var margin_container: MarginContainer = $MarginContainer
+@onready var root_vb: VBoxContainer = $MarginContainer/VBoxContainer
+@onready var label_guide: Label = $MarginContainer/VBoxContainer/Label
+@onready var sc: ScrollContainer = $MarginContainer/VBoxContainer/ScrollContainer
+@onready var var_name_field: LineEdit = $MarginContainer/VBoxContainer/HBoxContainer/VarNameField
+@onready var panel_bg: PanelContainer = $MarginContainer/VBoxContainer/ScrollContainer/PanelContainer
+@onready var node_container: VBoxContainer = $MarginContainer/VBoxContainer/ScrollContainer/PanelContainer/NodeContainer
+@onready var btn_check_all: Button = $MarginContainer/VBoxContainer/HBoxContainer/BtnCheckAll
+@onready var btn_uncheck_all: Button = $MarginContainer/VBoxContainer/HBoxContainer/BtnUncheckAll
+@onready var btn_convert: Button = $MarginContainer/VBoxContainer/HBoxContainer/BtnConvert
+@onready var btn_copy: Button = $MarginContainer/VBoxContainer/HBoxContainer/BtnCopy
+@onready var label_notice: Label = $MarginContainer/VBoxContainer/NoticeLabel
+@onready var code_display: TextEdit = $MarginContainer/VBoxContainer/CodeDisplay
+@onready var action_row: HBoxContainer = $MarginContainer/VBoxContainer/HBoxContainer
+
+const MIN_DIALOG_SIZE := Vector2i(680, 560)
+const INITIAL_SIZE_FALLBACK_RATIO := 0.9
+
+var _has_been_shown := false
+
+var current_language: String = "en"
 
 var L10N = {
 	"ja": {
@@ -46,11 +54,22 @@ var L10N = {
 	}
 }
 
+func set_language(locale: String) -> void:
+	current_language = "ja" if locale.to_lower().begins_with("ja") else "en"
+	if is_node_ready():
+		_apply_localized_texts()
+
 func trl(key: String) -> String:
-	var lang := TranslationServer.get_locale()
-	if L10N.has(lang) and L10N[lang].has(key):
-		return L10N[lang][key]
-	return L10N["en"][key]
+	var lang_table: Dictionary = L10N.get(current_language, L10N["en"])
+	if lang_table.has(key):
+		return str(lang_table[key])
+
+	var english_table: Dictionary = L10N["en"]
+	if english_table.has(key):
+		return str(english_table[key])
+
+	push_warning("Missing localization key: %s" % key)
+	return key
 
 var CATEGORY_FUNC_MAP := {
 	"AI_Spawner": "mod.GetSpawner",
@@ -82,11 +101,10 @@ var EXCLUDE_CLASSES := [
 
 var checked_order: Array = []
 
-func _ready():
-	if get_tree().edited_scene_root == null:
-		return
-		
-	exclusive = true
+func _ready() -> void:
+	# This dialog is an editor utility window, so its UI must initialize even
+	# during moments when edited_scene_root is temporarily null.
+	exclusive = false
 
 	_initialize_layout()
 
@@ -94,16 +112,8 @@ func _ready():
 	btn_uncheck_all.pressed.connect(_on_uncheck_all_pressed)
 	btn_convert.pressed.connect(_on_convert_pressed)
 	btn_copy.pressed.connect(_on_copy_pressed)
-	title = trl("Title")
-	get_ok_button().text = trl("ButtonCloseDialog")
-	btn_check_all.text = trl("ButtonCheckAll")
-	btn_uncheck_all.text = trl("ButtonUncheckAll")
-	btn_convert.text = trl("ButtonConvert")
-	btn_copy.text = trl("ButtonCopy")
-	label_guide.text = trl("LabelGuide")
-	label_notice.text = trl("LabelNotice")
+	_apply_localized_texts()
 	label_notice.modulate = Color(1, 0.8, 0.4)
-	var_name_field.placeholder_text = trl("PlaceholderVarNameField")
 	
 	panel_bg.add_theme_stylebox_override("panel", StyleBoxFlat.new())
 	var sb = panel_bg.get_theme_stylebox("panel")
@@ -116,46 +126,106 @@ func _ready():
 	visibility_changed.connect(_on_visiblity_changed)
 	close_requested.connect(_on_visiblity_changed)
 
-func _initialize_layout():
-	unresizable = true
-	var fixed_size = Vector2i(680, 730)
-	min_size = fixed_size
-	max_size = Vector2i(900, 900)
-	
-	for c in [root_ctrl, root_vb, sc, panel_bg, node_container, code_display]:
-		if is_instance_valid(c):
-			c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			c.size_flags_vertical = Control.SIZE_EXPAND_FILL
+func _apply_localized_texts() -> void:
+	title = trl("Title")
+	get_ok_button().text = trl("ButtonCloseDialog")
+	btn_check_all.text = trl("ButtonCheckAll")
+	btn_uncheck_all.text = trl("ButtonUncheckAll")
+	btn_convert.text = trl("ButtonConvert")
+	btn_copy.text = trl("ButtonCopy")
+	label_guide.text = trl("LabelGuide")
+	label_notice.text = trl("LabelNotice")
+	var_name_field.placeholder_text = trl("PlaceholderVarNameField")
 
-	if node_container:
-		node_container.custom_minimum_size = Vector2(0, 10)
+func _initialize_layout() -> void:
+	# AcceptDialog lays out its direct Control child inside the content area,
+	# above the built-in Close button row. Keep the direct MarginContainer
+	# unanchored so AcceptDialog can assign that rectangle correctly.
+	exclusive = false
+	unresizable = false
+	maximize_disabled = false
+	wrap_controls = true
+	min_size = MIN_DIALOG_SIZE
+	max_size = Vector2i.ZERO
 
-	if code_display:
-		code_display.custom_minimum_size = Vector2(600, 300)
-		code_display.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
-		
-	root_ctrl.anchor_right = 1.0
-	root_ctrl.anchor_bottom = 1.0
-	root_ctrl.offset_left = 0
-	root_ctrl.offset_top = 0
-	root_ctrl.offset_right = 0
-	root_ctrl.offset_bottom = 0
+	margin_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	margin_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	root_vb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	root_vb.size_flags_vertical = Control.SIZE_EXPAND_FILL
+
+	# Only the list and generated-code areas consume surplus height when the
+	# user enlarges the window.
+	sc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	sc.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	sc.custom_minimum_size = Vector2(600, 200)
+
+	code_display.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	code_display.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	code_display.custom_minimum_size = Vector2(600, 180)
+	code_display.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
+
+	panel_bg.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	node_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	node_container.custom_minimum_size = Vector2(0, 10)
+
+	action_row.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	label_guide.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	label_notice.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	label_guide.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label_notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label_guide.custom_minimum_size = Vector2(600, 0)
+	label_notice.custom_minimum_size = Vector2(600, 0)
 
 	hide()
 
-func populate_list(rows: Array):
-	if not node_container:
+func popup_fitted() -> void:
+	# The first opening is fitted to the controls' combined minimum size.
+	# Later openings keep the size chosen by the user.
+	child_controls_changed()
+	await get_tree().process_frame
+
+	if not _has_been_shown:
+		var content_min := get_contents_minimum_size()
+		size = Vector2i(
+			maxi(MIN_DIALOG_SIZE.x, int(ceil(content_min.x))),
+			maxi(MIN_DIALOG_SIZE.y, int(ceil(content_min.y)))
+		)
+		_has_been_shown = true
+
+	popup_centered_clamped(size, INITIAL_SIZE_FALLBACK_RATIO)
+
+func populate_list(rows: Array) -> void:
+	# A newly instantiated Window can be asked to populate immediately after it
+	# is added to the editor dock. Wait until @onready references are valid.
+	if not is_node_ready():
+		await ready
+
+	_apply_localized_texts()
+	checked_order.clear()
+
+	if not is_instance_valid(node_container):
+		push_error("TypeScript export dialog: NodeContainer is not ready.")
 		return
-	
-	for c in node_container.get_children():
-		c.queue_free()
-		
+
+	for child in node_container.get_children():
+		node_container.remove_child(child)
+		child.queue_free()
+
 	await get_tree().process_frame
 	
 	for row in rows:
+		if not row is Dictionary or not row.has("node"):
+			continue
+		var node := row["node"] as Node3D
+		if not is_instance_valid(node):
+			continue
+
 		var cb = CheckBox.new()
-		var script_name = row.node.get_script().get_path().get_file().get_basename()
-		cb.text = "%s (ObjId=%d)" % [row.node.name, row.node.ObjId]
+		var script_name := ""
+		var node_script := node.get_script()
+		if node_script is Script and not node_script.resource_path.is_empty():
+			script_name = node_script.resource_path.get_file().get_basename()
+		cb.text = "%s (ObjId=%d)" % [node.name, node.ObjId]
 		cb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		cb.tooltip_text = script_name
 		cb.set_meta("row", row)
@@ -189,26 +259,25 @@ func populate_list(rows: Array):
 			cb.add_theme_color_override("font_color", Color(1, 1, 1))
 		
 		node_container.add_child(cb)
+
+	node_container.queue_sort()
+	root_vb.queue_sort()
+	child_controls_changed()
+	await get_tree().process_frame
+	child_controls_changed()
 		
 func _on_visiblity_changed():
 	if visible:
 		_reset_dialog_state()
 
-func _reset_dialog_state():
-	# 変換結果テキストクリア
-	var result_label = $RootControl/MarginContainer/VBoxContainer/CodeDisplay
-	result_label.text = ""
-	
-	# チェック順や内部フラグ初期化
-	if "check_order" in self:
-		checked_order.clear()
-	
-	# UIの再生成（node_containerなど）
-	var nc = $RootControl/MarginContainer/VBoxContainer/ScrollContainer/PanelContainer/NodeContainer
-	for c in nc.get_children():
-		if c is CheckBox:
-			c.button_pressed = false
-				
+func _reset_dialog_state() -> void:
+	code_display.clear()
+	checked_order.clear()
+
+	for child in node_container.get_children():
+		if child is CheckBox:
+			child.button_pressed = false
+
 func _on_uncheck_all_pressed():
 	for child in node_container.get_children():
 		if child is CheckBox:
