@@ -84,7 +84,6 @@ var CATEGORY_FUNC_MAP := {
 	"Sector": "mod.GetSector",
 	"SpawnPoint": "mod.GetSpawnPoint",
 	"StationaryEmplacementSpawner": "mod.GetEmplacementSpawner",
-	"Vehicle": "",
 	"VehicleSpawner": "mod.GetVehicleSpawner",
 	"WorldIcon": "mod.GetWorldIcon",
 	"MCOM": "mod.GetMCOM",
@@ -94,7 +93,6 @@ var CATEGORY_FUNC_MAP := {
 	"VFX_": "mod.GetVFX",
 	"LootSpawner": "mod.GetLootSpawner",
 	"RingOfFire": "mod.GetRingOfFire",
-	"HeatZone": "",
 	"VL7Cloud": "mod.GetVL7Cloud",
 	"Bomb": "mod.GetBomb",
 	"Spatial Object": "mod.GetSpatialObject"
